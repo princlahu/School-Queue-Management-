@@ -108,6 +108,10 @@ cron.schedule('1 0 0 * * *', () => {
 app.use(cors()); 
 app.use(express.json()); 
 
+app.get('/', (req, res) => {
+    res.send('🚀 School Queue API is running...');
+});
+
 // --- AUTH ROUTES ---
 
 app.post('/api/signup', async (req, res) => {
