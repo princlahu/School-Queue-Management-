@@ -36,6 +36,15 @@ const redisClient = redis.createClient({
 });
 
 redisClient.on('error', err => console.log('❌ Redis Cloud Error:', err));
+redisClient.on('connect', () => console.log('✅ Redis Cloud u lidh me sukses!'));
+
+(async () => {
+    try {
+        await redisClient.connect();
+    } catch (err) {
+        console.error('❌ Dështoi lidhja me Redis:', err);
+    }
+})();
 
 // --- FUNKSIONI KRYESOR PËR RESETIMIN E SISTEMIT ---
 const resetQueueSystem = async () => {
