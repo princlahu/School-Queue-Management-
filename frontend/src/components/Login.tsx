@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import API_BASE_URL from '../api';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [msg, setMsg] = useState<string>('');
@@ -45,11 +46,11 @@ const Login = () => {
 
       setTimeout(() => {
         if (userRole === 'admin') {
-          window.location.href = '/admin-dashboard';
+          navigate('/admin-dashboard');
         } else if (userRole === 'staf-admin' || userRole === 'staff' || userRole === 'staf') {
-          window.location.href = '/staff-dashboard';
+          navigate('/staff-dashboard');
         } else {
-          window.location.href = '/dashboard';
+          navigate('/dashboard');
         }
       }, 300);
 
