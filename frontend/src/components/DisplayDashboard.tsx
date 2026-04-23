@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../api';
 
 interface CounterData {
   counterName: string;
@@ -20,7 +21,7 @@ const DisplayDashboard = () => {
 
   const fetchDisplayData = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/public-display');
+      const res = await axios.get(`${API_BASE_URL}/api/public-display`);
       const newData: CounterData[] = res.data;
 
       const prevMap: Record<string, string | null> = {};

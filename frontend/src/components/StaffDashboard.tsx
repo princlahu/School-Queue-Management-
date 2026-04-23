@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../api';
 
 interface CurrentStudent {
   id: string;
@@ -37,7 +38,7 @@ const StaffDashboard = () => {
       return;
     }
     try {
-      const res = await axios.get(`http://localhost:5000/api/users/${storedUser.id}`);
+      const res = await axios.get(`${API_BASE_URL}/api/users/${storedUser.id}`);
       const freshData = res.data;
       if (!freshData.department) {
         toast.error("Nuk keni sportel të caktuar! Kontaktoni administratorin.", { duration: 5000 });
@@ -61,7 +62,7 @@ const StaffDashboard = () => {
 
   const fetchWaitingList = async (counterName: string) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/queue/${encodeURIComponent(counterName)}`);
+      const res = await axios.get(`${API_BASE_URL}/api/queue/${encodeURIComponent(counterName)}`);
       setWaitingList(res.data);
     } catch (err) {
       console.error("Gabim gjatë marrjes së radhës");
@@ -71,7 +72,7 @@ const StaffDashboard = () => {
   const fetchMyHistory = async (date: string) => {
     if (!myCounter) return;
     try {
-      const res = await axios.get(`http://localhost:5000/api/history?date=${date}`);
+      const res = await axios.get(`${API_BASE_URL}/api/history?date=${date}`);
       const myWork = res.data.filter((h: any) => h.counter_name === myCounter);
       setHistory(myWork);
     } catch (err) {
@@ -96,7 +97,7 @@ const StaffDashboard = () => {
   const handleCallNext = async () => {
     if (!myCounter) return;
     try {
-      const res = await axios.post('http://localhost:5000/api/call-next', { counterName: myCounter });
+      const res = await axios.post(`${API_BASE_URL}/api/call-next`, { counterName: myCounter });
       if (res.data.student) {
         setCurrentStudent(res.data.student);
         fetchWaitingList(myCounter);
@@ -112,7 +113,7 @@ const StaffDashboard = () => {
   const handleFinish = async (status: 'completed' | 'no-show') => {
     if (!currentStudent || !myCounter) return;
     try {
-      await axios.post('http://localhost:5000/api/finish-student', {
+      await axios.post(`${API_BASE_URL}/api/finish-student`, {
         studentName: currentStudent.studentName,
         ticketNumber: currentStudent.ticketNumber,
         counterName: myCounter,

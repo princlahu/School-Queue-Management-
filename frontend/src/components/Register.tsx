@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import API_BASE_URL from '../api';
 
 const Register = () => {
   const [fullName, setFullName] = useState<string>('');
@@ -18,7 +19,7 @@ const Register = () => {
 
     try {
       // Dërgojmë fullName bashkë me email dhe password
-      const res = await axios.post('http://localhost:5000/api/signup', { 
+      const res = await axios.post(`${API_BASE_URL}/api/signup`, { 
         email, 
         password, 
         fullName 

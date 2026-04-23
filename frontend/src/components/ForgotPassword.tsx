@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import API_BASE_URL from '../api';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState<string>('');
@@ -13,7 +14,7 @@ const ForgotPassword = () => {
     setMsg('');
 
     try {
-      const res = await axios.post('http://localhost:5000/api/forgot-password', { email });
+      const res = await axios.post(`${API_BASE_URL}/api/forgot-password`, { email });
       setMsg(res.data.message || "Linku u dërgua me sukses! Kontrollo email-in.");
     } catch (err: any) {
       setMsg(err.response?.data?.error || "Ndodhi një gabim! Sigurohu që email-i është i saktë.");

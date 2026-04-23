@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import API_BASE_URL from '../api';
 
 const Login = () => {
   const [email, setEmail] = useState<string>('');
@@ -15,7 +16,7 @@ const Login = () => {
     setMsg('');
 
     try {
-      const res = await axios.post('http://localhost:5000/api/login', { email, password });
+      const res = await axios.post(`${API_BASE_URL}/api/login`, { email, password });
       
       if (!res.data || !res.data.user) {
         setMsg("Të dhënat e përdoruesit nuk u morën nga serveri.");

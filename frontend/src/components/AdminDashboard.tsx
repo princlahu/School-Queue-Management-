@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../api';
 
 interface User { id: string; full_name: string; email: string; role: string; department: string | null; }
 interface Counter { id: string; name: string; }
@@ -42,8 +43,8 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       const [usersRes, countersRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/users'),
-        axios.get('http://localhost:5000/api/counters')
+        axios.get(`${API_BASE_URL}/api/users`),
+        axios.get(`${API_BASE_URL}/api/counters`)
       ]);
       setUsers(usersRes.data);
       setCounters(countersRes.data);
@@ -58,7 +59,7 @@ const AdminDashboard = () => {
   const fetchHistory = async (date: string) => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/history?date=${date}`);
+      const res = await axios.get(`${API_BASE_URL}/api/history?date=${date}`);
       setHistory(res.data);
     } catch (err) {
       console.error("Gabim në histori:", err);
@@ -88,7 +89,7 @@ const AdminDashboard = () => {
       const counts: { [key: string]: number } = {};
       await Promise.all(
         counterList.map(async (c) => {
-          const res = await axios.get(`http://localhost:5000/api/queue-status/${encodeURIComponent(c.name)}`);
+          const res = await axios.get(`${API_BASE_URL}/api/queue-status/${encodeURIComponent(c.name)}`);
           counts[c.name] = res.data.count || 0;
         })
       );
@@ -102,7 +103,7 @@ const AdminDashboard = () => {
     setViewingCounter(counterName);
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/queue/${counterName}`);
+      const res = await axios.get(`${API_BASE_URL}/api/queue/${counterName}`);
       setSelectedQueue(res.data);
     } catch (err) {
       setSelectedQueue([]);
@@ -113,7 +114,7 @@ const AdminDashboard = () => {
 
   const handleAddCounter = async () => {
     if (!newCounterName.trim()) return;
-    await axios.post('http://localhost:5000/api/counters', { name: newCounterName });
+    await axios.post(`${API_BASE_URL}/api/counters`, { name: newCounterName });
     setNewCounterName('');
     toast.success('Sporteli u shtua me sukses!');
     fetchData();
@@ -121,7 +122,7 @@ const AdminDashboard = () => {
 
   const handleDeleteCounter = async (id: string, name: string) => {
     if (window.confirm(`A jeni i sigurt që dëshironi të fshini sportelin ${name}?`)) {
-      await axios.delete(`http://localhost:5000/api/counters/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/counters/${id}`);
       toast.success('Sporteli u fshi!');
       fetchData();
     }
@@ -138,7 +139,7 @@ const AdminDashboard = () => {
     if (!selectedUser) return;
     const deptToSave = selectedRole === 'staf-admin' ? selectedDept : null;
     try {
-      await axios.put('http://localhost:5000/api/update-user-role', {
+      await axios.put(`${API_BASE_URL}/api/update-user-role`, {
         userId: selectedUser.id,
         role: selectedRole,
         department: deptToSave

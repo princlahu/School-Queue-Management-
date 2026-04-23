@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../api';
 
 interface Counter {
   id: number;
@@ -53,7 +54,7 @@ const Dashboard = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/users/${user.id}`);
+      const res = await axios.get(`${API_BASE_URL}/api/users/${user.id}`);
       if (res.data.full_name) {
         const updatedUser = { ...user, full_name: res.data.full_name };
         localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -66,7 +67,7 @@ const Dashboard = () => {
 
   const fetchCounters = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/counters');
+      const res = await axios.get(`${API_BASE_URL}/api/counters`);
       setCounters(res.data);
       if (res.data.length > 0) setSelectedCounter(res.data[0].name);
     } catch (err) {
@@ -89,7 +90,7 @@ const Dashboard = () => {
     if (!selectedCounter) return;
     try {
       const studentName = user.full_name || 'Nxënës';
-      const res = await axios.post('http://localhost:5000/api/generate-ticket', {
+      const res = await axios.post(`${API_BASE_URL}/api/generate-ticket`, {
         studentName,
         counterName: selectedCounter
       });
@@ -109,7 +110,7 @@ const Dashboard = () => {
   const handleClearTicket = async () => {
     if (myTicket) {
       try {
-        await axios.post('http://localhost:5000/api/cancel-ticket', {
+        await axios.post(`${API_BASE_URL}/api/cancel-ticket`, {
           ticketNumber: myTicket.ticketNumber,
           counterName: myTicket.counterName,
           studentName: myTicket.studentName || user.full_name || 'Nxënës'
@@ -132,7 +133,7 @@ const Dashboard = () => {
     const checkQueueStatus = async () => {
       if (!myTicket) return;
       try {
-        const queueRes = await axios.get(`http://localhost:5000/api/queue/${encodeURIComponent(myTicket.counterName)}`);
+        const queueRes = await axios.get(`${API_BASE_URL}/api/queue/${encodeURIComponent(myTicket.counterName)}`);
         const queue: any[] = queueRes.data;
         const myIndex = queue.findIndex(t => t.ticketNumber === myTicket.ticketNumber);
         
@@ -150,7 +151,7 @@ const Dashboard = () => {
           return;
         }
 
-        const displayRes = await axios.get('http://localhost:5000/api/public-display');
+        const displayRes = await axios.get(`${API_BASE_URL}/api/public-display`);
         const displayData: any[] = displayRes.data;
         const myCounter = displayData.find(d => d.counterName === myTicket.counterName);
         
@@ -173,7 +174,7 @@ const Dashboard = () => {
              const parsedTicket = JSON.parse(ticketToCheck);
              
              try {
-               const statusRes = await axios.get(`http://localhost:5000/api/ticket-status/${parsedTicket.ticketNumber}`);
+               const statusRes = await axios.get(`${API_BASE_URL}/api/ticket-status/${parsedTicket.ticketNumber}`);
                const finalStatus = statusRes.data?.status;
                
                let msg = "Shërbimi juaj përfundoi. Faleminderit! ✅";
