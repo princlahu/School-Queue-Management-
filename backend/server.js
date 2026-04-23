@@ -25,13 +25,22 @@ if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 // --- 2. LIDHJA ME REDIS CLOUD ---
-console.log('🔌 Po përpiqem të lidhem me Redis:', process.env.REDIS_HOST, 'në portin:', process.env.REDIS_PORT);
+const r_host = process.env.REDIS_HOST;
+const r_port = process.env.REDIS_PORT;
+const r_pass = process.env.REDIS_PASSWORD;
+
+console.log('--- Kontrolli i Variablave Redis ---');
+console.log('HOST:', r_host ? 'OK (i vendosur)' : 'MUNGON ❌');
+console.log('PORT:', r_port ? 'OK (i vendosur)' : 'MUNGON ❌');
+console.log('PASS:', r_pass ? 'OK (i vendosur)' : 'MUNGON ❌');
+console.log('-----------------------------------');
 
 const redisClient = redis.createClient({
-    password: process.env.REDIS_PASSWORD,
+    password: r_pass,
     socket: {
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT) || 10304
+        host: r_host || '127.0.0.1',
+        port: parseInt(r_port) || 10304,
+        connectTimeout: 10000
     }
 });
 
@@ -39,6 +48,10 @@ redisClient.on('error', err => console.log('❌ Redis Cloud Error:', err));
 redisClient.on('connect', () => console.log('✅ Redis Cloud u lidh me sukses!'));
 
 (async () => {
+    if (!r_host) {
+        console.error('❌ KRITIKE: REDIS_HOST nuk është gjetur! Serveri mund të dështojë.');
+        return;
+    }
     try {
         await redisClient.connect();
     } catch (err) {
