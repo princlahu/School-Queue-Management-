@@ -25,11 +25,13 @@ if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 // --- 2. LIDHJA ME REDIS CLOUD ---
+console.log('🔌 Po përpiqem të lidhem me Redis:', process.env.REDIS_HOST, 'në portin:', process.env.REDIS_PORT);
+
 const redisClient = redis.createClient({
     password: process.env.REDIS_PASSWORD,
     socket: {
         host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT
+        port: parseInt(process.env.REDIS_PORT) || 10304
     }
 });
 
